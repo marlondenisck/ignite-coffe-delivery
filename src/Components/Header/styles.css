@@ -1,4 +1,6 @@
-@layer header {
+@import '../../layer.css';
+
+@layer components {
   header {
     max-width: 72.5rem;
     padding: 2rem 1.25rem;

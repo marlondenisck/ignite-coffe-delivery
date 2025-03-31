@@ -3,6 +3,7 @@ import { coffees } from '../../../data.json'
 import { Card } from '../../components/Card'
 
 import './styles.css'
+
 export function Home() {
   return (
     <div>

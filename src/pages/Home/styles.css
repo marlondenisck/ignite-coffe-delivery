@@ -1,7 +1,7 @@
-@layer home {
+@import '../../layer.css';
+@layer page {
   .hero {
     position: relative;
-
     img#hero-bg {
       position: absolute;
       top: 0;
