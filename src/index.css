@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--background);
+  color: var(--base-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+body input,
+textarea,
+button {
+  font-size: 1rem;
+  line-height: 130%;
+  font-weight: 400;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+}
+
+:root {
+  --white: #ffffff;
+  --background: #fafafa;
+  --base-card: #f3f2f2;
+  --base-input: #ededed;
+  --base-button: #e6e6e5;
+  --base-hover: #d7d5d5;
+  --base-label: #8d8686;
+  --base-text: #574f4d;
+  --base-subtitle: #403937;
+  --base-title: #272221;
+
+  --purple-light: #ebe5f9;
+  --purple: #8047f8;
+  --purple-dark: #4b2995;
+
+  --yellow-light: #f1e9c9;
+  --yellow: #dbac2c;
+  --yellow-dark: #c47f17;
+}
