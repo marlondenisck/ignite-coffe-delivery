@@ -1,4 +1,4 @@
-@layer base;
+/* @layer base, header, home, card; */
 
 @layer base {
   * {
@@ -8,6 +8,7 @@
   }
 
   body {
+    font-family: 'Roboto', sans-serif;
     background: var(--background);
     color: var(--base-text);
     -webkit-font-smoothing: antialiased;
@@ -19,6 +20,7 @@
     font-size: 1rem;
     line-height: 130%;
     font-weight: 400;
+    font-family: 'Roboto', sans-serif;
   }
 
   button {
