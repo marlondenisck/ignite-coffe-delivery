@@ -3,11 +3,11 @@ import './styles.css'
 
 export function Header() {
   return (
-    <header>
+    <header className="header-container">
       <a href="#">
         <img src="/logo.svg" alt="Coffe Delivery" />
       </a>
-      <aside>
+      <aside className="header-actions">
         <div>
           <MapPin size={22} weight="fill" />
           <span>Porto Alegre, RS</span>

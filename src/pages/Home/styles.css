@@ -1,90 +1,87 @@
-@import '../../layer.css';
-@layer page {
-  .hero {
-    position: relative;
-    img#hero-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      max-height: 544px;
-      width: 100vw;
-      object-fit: cover;
-    }
+.hero {
+  position: relative;
+  img#hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-height: 544px;
+    width: 100vw;
+    object-fit: cover;
   }
+}
 
-  .hero-content {
-    max-width: 1160px;
-    padding: 92px 20px;
-    margin: 0 auto;
+.hero-content {
+  max-width: 1160px;
+  padding: 92px 20px;
+  margin: 0 auto;
 
-    display: flex;
-    gap: 56px;
-    align-items: flex-start;
-    justify-content: space-between;
+  display: flex;
+  gap: 56px;
+  align-items: flex-start;
+  justify-content: space-between;
 
-    > div {
-      display: flex;
-      flex-direction: column;
-      gap: 66px;
-    }
-  }
-
-  .heading {
+  > div {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 66px;
+  }
+}
 
-    > h1 {
-      font-size: 3rem;
-      line-height: 130%;
-      font-weight: 800;
-      color: var(--base-title);
-    }
-    > span {
-      font-size: 1.25rem;
-      line-height: 130%;
-      font-weight: 400;
-      color: var(--base-subtitle);
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  > h1 {
+    font-size: 3rem;
+    line-height: 130%;
+    font-weight: 800;
+    color: var(--base-title);
+  }
+  > span {
+    font-size: 1.25rem;
+    line-height: 130%;
+    font-weight: 400;
+    color: var(--base-subtitle);
+  }
+}
+
+.info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: 20px;
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    svg {
+      padding: 8px;
+      border-radius: 999px;
     }
   }
+}
 
-  .info {
+.coffee-list {
+  max-width: 1160px;
+  padding: 32px 20px 150px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 54px;
+
+  > h2 {
+    font-size: 2rem;
+    line-height: 130%;
+    font-weight: 800;
+    color: var(--base-subtitle);
+  }
+
+  > div {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-row-gap: 20px;
-    > div {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      svg {
-        padding: 8px;
-        border-radius: 999px;
-      }
-    }
-  }
-
-  .coffee-list {
-    max-width: 1160px;
-    padding: 32px 20px 150px;
-    margin: 0 auto;
-
-    display: flex;
-    flex-direction: column;
-    gap: 54px;
-
-    > h2 {
-      font-size: 2rem;
-      line-height: 130%;
-      font-weight: 800;
-      color: var(--base-subtitle);
-    }
-
-    > div {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      grid-row-gap: 40px;
-      grid-column-gap: 32px;
-    }
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-row-gap: 40px;
+    grid-column-gap: 32px;
   }
 }

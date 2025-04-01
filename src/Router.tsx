@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Header } from './components/Header'
 import { Home } from './pages/Home'
-// import { Cart } from './pages/Cart';
+import { Cart } from './pages/Cart'
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => (
   <>
@@ -23,16 +23,15 @@ export function Router() {
             </DefaultLayout>
           }
         />
-        {/* 
-        <Route 
-          path="/cart" 
+
+        <Route
+          path="/cart"
           element={
             <DefaultLayout>
               <Cart />
             </DefaultLayout>
-          } 
-        /> 
-        */}
+          }
+        />
       </Routes>
     </BrowserRouter>
   )
