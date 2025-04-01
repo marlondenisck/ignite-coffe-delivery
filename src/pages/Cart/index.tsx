@@ -8,9 +8,13 @@ import {
 } from '@phosphor-icons/react'
 
 import { coffees } from '../../../data.json'
+import { useContext } from 'react'
+import { CartContext } from '../../contexts/CartContext'
 import './styles.css'
 
 export function Cart() {
+  const { items } = useContext(CartContext)
+
   return (
     <main className="container-cart">
       <div className="info-container-cart">

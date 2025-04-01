@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
+import { CartContext } from '../../contexts/CartContext'
 
-import { CheckFat, ShoppingCart } from '@phosphor-icons/react'
+import { CheckFat, ShoppingCart, Minus, Plus } from '@phosphor-icons/react'
 import './styles.css'
 
 type CardProps = {
@@ -15,6 +16,41 @@ type CardProps = {
 }
 export function Card({ coffee }: CardProps) {
   const [isItemAdded, setIsItemAdded] = useState(false)
+  const [quantity, setQuantity] = useState(1)
+
+  const { items, addToCart } = useContext(CartContext)
+  // const isIteminCart = items.some(item => item.id === coffee.id)
+
+  function incrementQuantity() {
+    setQuantity(state => state + 1)
+  }
+
+  function decrementQuantity() {
+    if (quantity > 1) {
+      setQuantity(state => state - 1)
+    }
+  }
+
+  function handleAddItem() {
+    addToCart({ id: coffee.id, quantity })
+    setIsItemAdded(true)
+    setQuantity(1)
+  }
+
+  const QuantityInput = () => {
+    return (
+      <div className="quantity-input-container">
+        <button disabled={isItemAdded} onClick={() => decrementQuantity()}>
+          <Minus size={14} />
+        </button>
+        <span>{quantity}</span>
+        <button disabled={isItemAdded} onClick={() => incrementQuantity()}>
+          <Plus size={14} />
+        </button>
+      </div>
+    )
+  }
+
   return (
     <div className="container">
       <img src={coffee?.image} alt={coffee?.title} />
@@ -32,9 +68,9 @@ export function Card({ coffee }: CardProps) {
           <span>{coffee?.price.toFixed(2)}</span>
         </div>
         <div className="order">
-          <div className="quantityInput">-1+</div>
+          <QuantityInput />
 
-          <button type="button">
+          <button type="button" disabled={isItemAdded} onClick={handleAddItem}>
             {isItemAdded ? (
               <CheckFat weight="fill" size={22} color={`var(--base-card)`} />
             ) : (

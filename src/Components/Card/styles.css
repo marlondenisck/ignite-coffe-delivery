@@ -100,3 +100,33 @@
     }
   }
 }
+
+.quantity-input-container {
+  padding: 8px;
+  background-color: var(--base-button);
+  border-radius: 6px;
+
+  display: flex;
+  gap: 4px;
+
+  button {
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+  }
+
+  button svg {
+    color: var(--purple);
+
+    transition: all 0.2s;
+
+    &:hover {
+      color: var(--purple-dark);
+    }
+  }
+
+  span {
+    padding-top: 2px;
+    color: var(--base-title);
+  }
+}
