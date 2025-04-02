@@ -1,3 +1,4 @@
+import React, { useContext } from 'react'
 import {
   Bank,
   CreditCard,
@@ -8,12 +9,28 @@ import {
 } from '@phosphor-icons/react'
 
 import { coffees } from '../../../data.json'
-import { useContext } from 'react'
 import { CartContext } from '../../contexts/CartContext'
+
 import './styles.css'
 
 export function Cart() {
-  const { items } = useContext(CartContext)
+  const { items, removeFromCart } = useContext(CartContext)
+  const coffeesInCart = items.map(item => {
+    const coffeeInfo = coffees.find(coffee => coffee.id === item.id)
+
+    if (!coffeeInfo) {
+      throw new Error('Invalid coffee.')
+    }
+
+    return {
+      ...coffeeInfo,
+      quantity: item.quantity
+    }
+  })
+
+  function handleItemRemove(itemId: string) {
+    removeFromCart(itemId)
+  }
 
   return (
     <main className="container-cart">
@@ -94,26 +111,28 @@ export function Cart() {
       <div className="info-container-cart">
         <h2>Cafés selecionados</h2>
         <div className="cart-total-cart">
-          <>
-            <div className="coffee-cart">
-              <div>
-                <img src="./coffees/americano.png" />
+          {coffeesInCart.map(coffee => (
+            <React.Fragment key={coffee.id}>
+              <div className="coffee-cart">
                 <div>
-                  <span>cafe</span>
-                  <div className="coffee-info-cart">
-                    <input type="text" className="quantity-info" />
+                  <img src={coffee.image} alt={coffee.title} />
+                  <div>
+                    <span>{coffee.title}</span>
+                    <div className="coffee-info-cart">
+                      <input type="text" className="quantity-info" />
 
-                    <button type="button">
-                      <Trash />
-                      <span>Remover</span>
-                    </button>
+                      <button onClick={() => handleItemRemove(coffee.id)}>
+                        <Trash />
+                        <span>Remover</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
+                <aside>R$ {coffee.price?.toFixed(2)}</aside>
               </div>
-              <aside>R$ {(11.1)?.toFixed(2)}</aside>
-            </div>
-            <hr />
-          </>
+              <hr />
+            </React.Fragment>
+          ))}
 
           <div className="cart-total-info-cart">
             <div>

@@ -25,6 +25,11 @@
     flex-direction: column;
     gap: 66px;
   }
+  @media (max-width: 950px) {
+    img {
+      display: none;
+    }
+  }
 }
 
 .heading {
@@ -83,5 +88,16 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-row-gap: 40px;
     grid-column-gap: 32px;
+    @media (max-width: 1140px) {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+    @media (max-width: 890px) {
+      grid-column-gap: 8px;
+      align-self: center;
+    }
+    @media (max-width: 800px) {
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: inherit;
+    }
   }
 }
