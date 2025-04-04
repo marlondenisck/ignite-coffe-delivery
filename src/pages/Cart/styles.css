@@ -69,11 +69,33 @@
   display: grid;
   grid-template-areas:
     'cep . .'
-    'street street street'
-    'number fullAddress fullAddress'
-    'neighborhood city state';
+    'rua rua rua'
+    'numero complemento complemento'
+    'bairro cidade uf';
   grid-template-columns: 200px 1fr 60px;
   grid-gap: 16px 12px;
+}
+
+.grid-area-cep {
+  grid-area: cep;
+}
+.grid-area-rua {
+  grid-area: rua;
+}
+.grid-area-numero {
+  grid-area: numero;
+}
+.grid-area-complemento {
+  grid-area: complemento;
+}
+.grid-area-bairro {
+  grid-area: bairro;
+}
+.grid-area-cidade {
+  grid-area: cidade;
+}
+.grid-area-uf {
+  grid-area: uf;
 }
 
 .payment-container-cart {
@@ -282,4 +304,52 @@
 }
 .card-cart {
   background-color: var(--base-card);
+}
+
+.address-form-cart-box-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.address-form-cart-box-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 6px;
+  border: 1px solid var(--base-button);
+  border-radius: 6px;
+
+  background-color: var(--base-input);
+
+  transition: all 0.2s;
+
+  &[data-state='focused'] {
+    border-color: var(--yellow-dark);
+  }
+
+  &[data-state='blurred'] {
+    border-color: var(--base-button);
+  }
+
+  input {
+    color: var(--base-text);
+    width: 100%;
+    background-color: var(--base-input);
+    border: none;
+    padding: 12px;
+    outline: none;
+
+    &::placeholder {
+      color: var(--base-label);
+    }
+  }
+  span {
+    color: var(--base-label);
+    padding-right: 12px;
+    font-size: 0.875rem;
+    line-height: 130%;
+    font-weight: 400;
+    font-style: italic;
+  }
 }

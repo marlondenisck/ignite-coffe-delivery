@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState, FocusEvent } from 'react'
 import {
   Bank,
   CreditCard,
@@ -18,6 +18,7 @@ const entrega = 3.5
 
 export function Cart() {
   const { items, removeFromCart, updateQuantity } = useContext(CartContext)
+  const [focusedInput, setFocusedInput] = useState<string | null>(null)
 
   const coffeesInCart = items.map(item => {
     const coffeeInfo = coffees.find(coffee => coffee.id === item.id)
@@ -50,6 +51,14 @@ export function Cart() {
     }
   }
 
+  function handleFocus(event: FocusEvent<HTMLInputElement>) {
+    setFocusedInput(event.target.name)
+  }
+
+  function handleBlur() {
+    setFocusedInput(null)
+  }
+
   return (
     <main className="container-cart">
       <div className="info-container-cart">
@@ -68,13 +77,115 @@ export function Cart() {
             </header>
 
             <div className="address-form-cart">
-              <input type="text" name="cep" placeholder="CEP" />
-              <input type="text" name="rua" placeholder="Rua" />
-              <input type="text" name="numero" placeholder="Número" />
-              <input type="text" name="complemento" placeholder="Complemento" />
-              <input type="text" name="bairro" placeholder="Bairro" />
-              <input type="text" name="cidade" placeholder="Cidade" />
-              <input type="text" name="uf" placeholder="UF" />
+              <div className="address-form-cart-box-form grid-area-cep">
+                <label
+                  htmlFor="cep"
+                  className="address-form-cart-box-label"
+                  data-state={focusedInput === 'cep' ? 'focused' : 'blurred'}
+                >
+                  <input
+                    type="text"
+                    name="cep"
+                    placeholder="CEP"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+              </div>
+              <div className="address-form-cart-box-form grid-area-rua">
+                <label
+                  htmlFor="rua"
+                  className="address-form-cart-box-label"
+                  data-state={focusedInput === 'rua' ? 'focused' : 'blurred'}
+                >
+                  <input
+                    type="text"
+                    name="rua"
+                    placeholder="Rua"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+              </div>
+
+              <div className="address-form-cart-box-form grid-area-numero">
+                <label
+                  htmlFor="numero"
+                  className="address-form-cart-box-label"
+                  data-state={focusedInput === 'numero' ? 'focused' : 'blurred'}
+                >
+                  <input
+                    type="text"
+                    name="numero"
+                    placeholder="Número"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+              </div>
+              <div className="address-form-cart-box-form grid-area-complemento">
+                <label
+                  htmlFor="complemento"
+                  className="address-form-cart-box-label"
+                  data-state={
+                    focusedInput === 'complemento' ? 'focused' : 'blurred'
+                  }
+                >
+                  <input
+                    type="text"
+                    name="complemento"
+                    placeholder="Complemento"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                  <span>Opcional</span>
+                </label>
+              </div>
+              <div className="address-form-cart-box-form grid-area-bairro">
+                <label
+                  htmlFor="bairro"
+                  className="address-form-cart-box-label"
+                  data-state={focusedInput === 'bairro' ? 'focused' : 'blurred'}
+                >
+                  <input
+                    type="text"
+                    name="bairro"
+                    placeholder="Bairro"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+              </div>
+              <div className="address-form-cart-box-form grid-area-cidade">
+                <label
+                  htmlFor="cidade"
+                  className="address-form-cart-box-label"
+                  data-state={focusedInput === 'cidade' ? 'focused' : 'blurred'}
+                >
+                  <input
+                    type="text"
+                    name="cidade"
+                    placeholder="Cidade"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+              </div>
+              <div className="address-form-cart-box-form grid-area-uf">
+                <label
+                  htmlFor="uf"
+                  className="address-form-cart-box-label"
+                  data-state={focusedInput === 'uf' ? 'focused' : 'blurred'}
+                >
+                  <input
+                    type="text"
+                    name="uf"
+                    placeholder="UF"
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  />
+                </label>
+              </div>
             </div>
           </div>
 
