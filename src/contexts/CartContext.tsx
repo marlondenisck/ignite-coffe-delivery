@@ -9,8 +9,9 @@ type CartItem = {
 // Tipo para o contexto do carrinho
 type CartContextType = {
   items: CartItem[]
-  addToCart: (id: string, quantity: number) => void
+  addToCart: (item: CartItem) => void
   removeFromCart: (id: string) => void
+  updateQuantity: (id: string, quantity: number) => void
 }
 
 export const CartContext = createContext({} as CartContextType)
@@ -39,8 +40,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems(items.filter(item => item.id !== id))
   }
 
+  function updateQuantity(id: string, quantity: number) {
+    // Não permitir quantidades menores que 1
+    if (quantity < 1) return
+
+    const itemIndex = items.findIndex(item => item.id === id)
+
+    if (itemIndex >= 0) {
+      const newItems = [...items]
+      newItems[itemIndex].quantity = quantity
+      setItems(newItems)
+    }
+  }
+
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{
+        items,
+        addToCart,
+        removeFromCart,
+        updateQuantity
+      }}
+    >
       {children}
     </CartContext.Provider>
   )

@@ -1,8 +1,8 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useContext, useState } from 'react'
 import { CartContext } from '../../contexts/CartContext'
 import { useNavigate } from 'react-router-dom'
-
-import { CheckFat, ShoppingCart, Minus, Plus } from '@phosphor-icons/react'
+import { QuantityInput } from '../QuantityInput'
+import { CheckFat, ShoppingCart } from '@phosphor-icons/react'
 import './styles.css'
 
 type CardProps = {
@@ -17,10 +17,19 @@ type CardProps = {
 }
 export function Card({ coffee }: CardProps) {
   const navigate = useNavigate()
-  const [isItemAdded, setIsItemAdded] = useState(false)
   const [quantity, setQuantity] = useState(1)
-
+  const [isItemAdded, setIsItemAdded] = useState(false)
   const { items, addToCart } = useContext(CartContext)
+
+  function incrementQuantity() {
+    setQuantity(state => state + 1)
+  }
+
+  function decrementQuantity() {
+    if (quantity > 1) {
+      setQuantity(state => state - 1)
+    }
+  }
 
   // Verifica se o café está no carrinho e atualiza a quantidade
   useEffect(() => {
@@ -39,16 +48,6 @@ export function Card({ coffee }: CardProps) {
     }
   }, [items, coffee.id])
 
-  function incrementQuantity() {
-    setQuantity(state => state + 1)
-  }
-
-  function decrementQuantity() {
-    if (quantity > 1) {
-      setQuantity(state => state - 1)
-    }
-  }
-
   function handleAddItem() {
     if (isItemAdded) {
       // Se o item já está no carrinho, navegamos para a página do carrinho
@@ -57,24 +56,6 @@ export function Card({ coffee }: CardProps) {
       addToCart({ id: coffee.id, quantity })
       setIsItemAdded(true)
     }
-  }
-
-  const QuantityInput = () => {
-    return (
-      <div className="quantity-input-container">
-        <button
-          // Desabilitamos apenas a diminuição se for 1 ou se já estiver no carrinho
-          disabled={quantity <= 1 || isItemAdded}
-          onClick={() => decrementQuantity()}
-        >
-          <Minus size={14} />
-        </button>
-        <span>{quantity}</span>
-        <button disabled={isItemAdded} onClick={() => incrementQuantity()}>
-          <Plus size={14} />
-        </button>
-      </div>
-    )
   }
 
   return (
@@ -94,7 +75,11 @@ export function Card({ coffee }: CardProps) {
           <span>{coffee?.price.toFixed(2)}</span>
         </div>
         <div className="order">
-          <QuantityInput />
+          <QuantityInput
+            quantity={quantity}
+            incrementQuantity={incrementQuantity}
+            decrementQuantity={decrementQuantity}
+          />
 
           <button
             type="button"

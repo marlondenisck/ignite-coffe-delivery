@@ -12,9 +12,13 @@ import { coffees } from '../../../data.json'
 import { CartContext } from '../../contexts/CartContext'
 
 import './styles.css'
+import { QuantityInput } from '../../components/QuantityInput'
+
+const entrega = 3.5
 
 export function Cart() {
-  const { items, removeFromCart } = useContext(CartContext)
+  const { items, removeFromCart, updateQuantity } = useContext(CartContext)
+
   const coffeesInCart = items.map(item => {
     const coffeeInfo = coffees.find(coffee => coffee.id === item.id)
 
@@ -28,8 +32,22 @@ export function Cart() {
     }
   })
 
+  const totalItemsPrice = coffeesInCart.reduce((previousValue, currentItem) => {
+    return (previousValue += currentItem.price * currentItem.quantity)
+  }, 0)
+
   function handleItemRemove(itemId: string) {
     removeFromCart(itemId)
+  }
+
+  function handleIncrementQuantity(id: string, currentQuantity: number) {
+    updateQuantity(id, currentQuantity + 1)
+  }
+
+  function handleDecrementQuantity(id: string, currentQuantity: number) {
+    if (currentQuantity > 1) {
+      updateQuantity(id, currentQuantity - 1)
+    }
   }
 
   return (
@@ -119,7 +137,15 @@ export function Cart() {
                   <div>
                     <span>{coffee.title}</span>
                     <div className="coffee-info-cart">
-                      <input type="text" className="quantity-info" />
+                      <QuantityInput
+                        quantity={coffee.quantity}
+                        incrementQuantity={() =>
+                          handleIncrementQuantity(coffee.id, coffee.quantity)
+                        }
+                        decrementQuantity={() =>
+                          handleDecrementQuantity(coffee.id, coffee.quantity)
+                        }
+                      />
 
                       <button onClick={() => handleItemRemove(coffee.id)}>
                         <Trash />
@@ -138,30 +164,30 @@ export function Cart() {
             <div>
               <span>Total de itens</span>
               <span>
-                {/* {new Intl.NumberFormat('pt-br', {
+                {new Intl.NumberFormat('pt-br', {
                   currency: 'BRL',
-                  style: 'currency',
-                }).format(totalItemsPrice)} */}
+                  style: 'currency'
+                }).format(totalItemsPrice)}
               </span>
             </div>
 
             <div>
               <span>Entrega</span>
               <span>
-                {/* {new Intl.NumberFormat('pt-br', {
+                {new Intl.NumberFormat('pt-br', {
                   currency: 'BRL',
-                  style: 'currency',
-                }).format(shippingPrice)} */}
+                  style: 'currency'
+                }).format(entrega)}
               </span>
             </div>
 
             <div>
               <span>Total</span>
               <span>
-                {/* {new Intl.NumberFormat('pt-br', {
+                {new Intl.NumberFormat('pt-br', {
                   currency: 'BRL',
-                  style: 'currency',
-                }).format(totalItemsPrice + shippingPrice)} */}
+                  style: 'currency'
+                }).format(totalItemsPrice + entrega)}
               </span>
             </div>
           </div>
