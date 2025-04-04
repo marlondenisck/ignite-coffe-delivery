@@ -1,4 +1,5 @@
 import React, { useContext, useState, FocusEvent } from 'react'
+import { useForm } from 'react-hook-form'
 import {
   Bank,
   CreditCard,
@@ -16,9 +17,33 @@ import { QuantityInput } from '../../components/QuantityInput'
 
 const entrega = 3.5
 
+type OrderFormData = {
+  cep: string
+  rua: string
+  numero: string
+  complemento: string
+  bairro: string
+  cidade: string
+  uf: string
+  paymentMethod: 'credit' | 'debit' | 'cash'
+}
+
 export function Cart() {
   const { items, removeFromCart, updateQuantity } = useContext(CartContext)
   const [focusedInput, setFocusedInput] = useState<string | null>(null)
+  const { register, handleSubmit } = useForm<OrderFormData>({
+    defaultValues: {
+      cep: '',
+      rua: '',
+      numero: '',
+      complemento: '',
+      bairro: '',
+      cidade: '',
+      uf: '',
+      paymentMethod: 'credit'
+    }
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const coffeesInCart = items.map(item => {
     const coffeeInfo = coffees.find(coffee => coffee.id === item.id)
@@ -59,12 +84,28 @@ export function Cart() {
     setFocusedInput(null)
   }
 
+  async function onSubmit(data: OrderFormData) {
+    setIsSubmitting(true)
+
+    try {
+      console.log('Dados do formulário:', data)
+      // Simulando um envio para API
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      alert('Pedido enviado! Confira o console para ver os dados.')
+    } catch (error) {
+      console.error('Erro ao enviar pedido:', error)
+      alert('Erro ao enviar pedido. Tente novamente.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <main className="container-cart">
       <div className="info-container-cart">
         <h2>Complete seu pedido</h2>
 
-        <form id="order">
+        <form id="order" onSubmit={handleSubmit(onSubmit)}>
           <div className="address-container-cart">
             <header className="address-heading-cart">
               <MapPin size={22} />
@@ -85,10 +126,11 @@ export function Cart() {
                 >
                   <input
                     type="text"
-                    name="cep"
                     placeholder="CEP"
                     onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    {...register('cep', {
+                      onBlur: () => handleBlur()
+                    })}
                   />
                 </label>
               </div>
@@ -100,10 +142,11 @@ export function Cart() {
                 >
                   <input
                     type="text"
-                    name="rua"
                     placeholder="Rua"
                     onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    {...register('rua', {
+                      onBlur: () => handleBlur()
+                    })}
                   />
                 </label>
               </div>
@@ -116,10 +159,11 @@ export function Cart() {
                 >
                   <input
                     type="text"
-                    name="numero"
                     placeholder="Número"
                     onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    {...register('numero', {
+                      onBlur: () => handleBlur()
+                    })}
                   />
                 </label>
               </div>
@@ -133,10 +177,11 @@ export function Cart() {
                 >
                   <input
                     type="text"
-                    name="complemento"
                     placeholder="Complemento"
                     onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    {...register('complemento', {
+                      onBlur: () => handleBlur()
+                    })}
                   />
                   <span>Opcional</span>
                 </label>
@@ -149,10 +194,11 @@ export function Cart() {
                 >
                   <input
                     type="text"
-                    name="bairro"
                     placeholder="Bairro"
                     onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    {...register('bairro', {
+                      onBlur: () => handleBlur()
+                    })}
                   />
                 </label>
               </div>
@@ -164,10 +210,11 @@ export function Cart() {
                 >
                   <input
                     type="text"
-                    name="cidade"
                     placeholder="Cidade"
                     onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    {...register('cidade', {
+                      onBlur: () => handleBlur()
+                    })}
                   />
                 </label>
               </div>
@@ -179,10 +226,11 @@ export function Cart() {
                 >
                   <input
                     type="text"
-                    name="uf"
                     placeholder="UF"
                     onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    {...register('uf', {
+                      onBlur: () => handleBlur()
+                    })}
                   />
                 </label>
               </div>
@@ -206,21 +254,33 @@ export function Cart() {
               <div>
                 {/* Opção de cartão de crédito */}
                 <label className="payment-option-cart">
-                  <input type="radio" name="paymentMethod" value="credit" />
+                  <input
+                    type="radio"
+                    value="credit"
+                    {...register('paymentMethod')}
+                  />
                   <CreditCard size={16} />
                   <span>Cartão de crédito</span>
                 </label>
 
                 {/* Opção de cartão de débito */}
                 <label className="payment-option-cart">
-                  <input type="radio" name="paymentMethod" value="debit" />
+                  <input
+                    type="radio"
+                    value="debit"
+                    {...register('paymentMethod')}
+                  />
                   <Bank size={16} />
                   <span>Cartão de débito</span>
                 </label>
 
                 {/* Opção de dinheiro */}
                 <label className="payment-option-cart">
-                  <input type="radio" name="paymentMethod" value="cash" />
+                  <input
+                    type="radio"
+                    value="cash"
+                    {...register('paymentMethod')}
+                  />
                   <Money size={16} />
                   <span>Dinheiro</span>
                 </label>
@@ -304,8 +364,13 @@ export function Cart() {
           </div>
         </div>
 
-        <button type="submit" className="checkout-button-cart">
-          Confirmar pedido
+        <button
+          type="submit"
+          form="order"
+          className="checkout-button-cart"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Enviando...' : 'Confirmar pedido'}
         </button>
       </div>
     </main>
