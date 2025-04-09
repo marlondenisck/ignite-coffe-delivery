@@ -31,6 +31,10 @@ type OrderFormData = {
   paymentMethod: 'credit' | 'debit' | 'cash'
 }
 
+const ensureArray = (possibleArray: any) => {
+  return Array.isArray(possibleArray) ? possibleArray : []
+}
+
 export function Cart() {
   const { items, removeFromCart, updateQuantity, decrementQuantity } =
     useContext(CartContext)
@@ -78,20 +82,23 @@ export function Cart() {
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const coffeesInCart = items.map(item => {
-    const coffeeInfo = coffees.find(coffee => coffee.id === item.id)
+  const itemsArray = ensureArray(items)
 
-    if (!coffeeInfo) {
-      throw new Error('Invalid coffee.')
-    }
+  const coffeesInCart = itemsArray
+    .map(item => {
+      const coffeeInfo = coffees.find(coffee => coffee.id === item.id)
 
-    return {
-      ...coffeeInfo,
-      quantity: item.quantity
-    }
-  })
+      if (!coffeeInfo) {
+        console.error('Café não encontrado:', item.id)
+        return null // Retornar null permite filtrar depois
+      }
 
-  console.log('coffeeInfo', coffeesInCart)
+      return {
+        ...coffeeInfo,
+        quantity: item.quantity
+      }
+    })
+    .filter(Boolean)
 
   const totalItemsPrice = coffeesInCart.reduce((previousValue, currentItem) => {
     return (previousValue += currentItem.price * currentItem.quantity)
