@@ -289,7 +289,7 @@
     background-color: var(--base-hover);
   }
 
-  &[data-state='true'] {
+  &.active {
     background-color: var(--purple-light);
     border-color: var(--purple);
   }

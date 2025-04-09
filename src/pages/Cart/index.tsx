@@ -1,5 +1,8 @@
 import React, { useContext, useState, FocusEvent } from 'react'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
 import {
   Bank,
   CreditCard,
@@ -31,7 +34,34 @@ type OrderFormData = {
 export function Cart() {
   const { items, removeFromCart, updateQuantity } = useContext(CartContext)
   const [focusedInput, setFocusedInput] = useState<string | null>(null)
-  const { register, handleSubmit } = useForm<OrderFormData>({
+
+  const orderFormSchema = z.object({
+    cep: z
+      .string()
+      .nonempty('O CEP é obrigatório')
+      .regex(/^\d{5}-?\d{3}$/, 'CEP inválido (formato: 12345-678)'),
+    rua: z.string().nonempty('A rua é obrigatória'),
+    numero: z.string().nonempty('O número é obrigatório'),
+    complemento: z.string().optional(),
+    bairro: z.string().nonempty('O bairro é obrigatório'),
+    cidade: z.string().nonempty('A cidade é obrigatória'),
+    uf: z
+      .string()
+      .nonempty('UF é obrigatória')
+      .length(2, 'UF deve ter 2 letras'),
+    paymentMethod: z.enum(['credit', 'debit', 'cash'], {
+      errorMap: () => ({ message: 'Selecione uma forma de pagamento' })
+    })
+  })
+  type OrderFormData = z.infer<typeof orderFormSchema>
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm<OrderFormData>({
+    resolver: zodResolver(orderFormSchema),
     defaultValues: {
       cep: '',
       rua: '',
@@ -43,6 +73,8 @@ export function Cart() {
       paymentMethod: 'credit'
     }
   })
+  const paymentMethod = watch('paymentMethod')
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const coffeesInCart = items.map(item => {
@@ -253,7 +285,9 @@ export function Cart() {
             <div className="payment-options-cart">
               <div>
                 {/* Opção de cartão de crédito */}
-                <label className="payment-option-cart">
+                <label
+                  className={`payment-option-cart ${paymentMethod === 'credit' ? 'active' : ''}`}
+                >
                   <input
                     type="radio"
                     value="credit"
@@ -264,7 +298,9 @@ export function Cart() {
                 </label>
 
                 {/* Opção de cartão de débito */}
-                <label className="payment-option-cart">
+                <label
+                  className={`payment-option-cart ${paymentMethod === 'debit' ? 'active' : ''}`}
+                >
                   <input
                     type="radio"
                     value="debit"
@@ -275,7 +311,9 @@ export function Cart() {
                 </label>
 
                 {/* Opção de dinheiro */}
-                <label className="payment-option-cart">
+                <label
+                  className={`payment-option-cart ${paymentMethod === 'cash' ? 'active' : ''}`}
+                >
                   <input
                     type="radio"
                     value="cash"
@@ -286,12 +324,11 @@ export function Cart() {
                 </label>
               </div>
 
-              {/* {errors.paymentMethod ? ( */}
-              <div className="payment-error-message-cart" role="alert">
-                {/* {errors.paymentMethod.message} */}
-                erro
-              </div>
-              {/* ) : null} */}
+              {errors.paymentMethod ? (
+                <div className="payment-error-message-cart" role="alert">
+                  {errors.paymentMethod.message}
+                </div>
+              ) : null}
             </div>
           </aside>
         </form>
