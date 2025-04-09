@@ -1,4 +1,4 @@
-import React, { useContext, useState, FocusEvent } from 'react'
+import React, { useContext, useState, FocusEvent, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -32,7 +32,8 @@ type OrderFormData = {
 }
 
 export function Cart() {
-  const { items, removeFromCart, updateQuantity } = useContext(CartContext)
+  const { items, removeFromCart, updateQuantity, decrementQuantity } =
+    useContext(CartContext)
   const [focusedInput, setFocusedInput] = useState<string | null>(null)
 
   const orderFormSchema = z.object({
@@ -90,6 +91,8 @@ export function Cart() {
     }
   })
 
+  console.log('coffeeInfo', coffeesInCart)
+
   const totalItemsPrice = coffeesInCart.reduce((previousValue, currentItem) => {
     return (previousValue += currentItem.price * currentItem.quantity)
   }, 0)
@@ -102,10 +105,8 @@ export function Cart() {
     updateQuantity(id, currentQuantity + 1)
   }
 
-  function handleDecrementQuantity(id: string, currentQuantity: number) {
-    if (currentQuantity > 1) {
-      updateQuantity(id, currentQuantity - 1)
-    }
+  function handleDecrementItemQuantity(id: string) {
+    decrementQuantity(id)
   }
 
   function handleFocus(event: FocusEvent<HTMLInputElement>) {
@@ -350,9 +351,10 @@ export function Cart() {
                         incrementQuantity={() =>
                           handleIncrementQuantity(coffee.id, coffee.quantity)
                         }
-                        decrementQuantity={() =>
-                          handleDecrementQuantity(coffee.id, coffee.quantity)
-                        }
+                        decrementQuantity={() => {
+                          handleDecrementItemQuantity(coffee.id)
+                          console.log('disparando', coffee.id)
+                        }}
                       />
 
                       <button onClick={() => handleItemRemove(coffee.id)}>

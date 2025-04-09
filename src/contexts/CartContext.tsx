@@ -1,71 +1,40 @@
-import { createContext, useState, ReactNode } from 'react'
+import { createContext, ReactNode, useReducer } from 'react'
+import { CartItemInterface, cyclesReducer } from '../reducers/cart/reducers'
+import { ActionTypes } from '../reducers/cart/actions'
 
-// Tipo para um item no carrinho
-type CartItem = {
-  id: string
-  quantity: number
-}
-
-// Tipo para o contexto do carrinho
 type CartContextType = {
-  items: CartItem[]
-  addToCart: (item: CartItem) => void
+  items: CartItemInterface[]
+  addToCart: (item: CartItemInterface) => void
   removeFromCart: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
-  decrementQuantity: (id: string) => void
+  decrementQuantity: (itemId: string) => void
 }
 
 export const CartContext = createContext({} as CartContextType)
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState([])
+  const [items, dispatch] = useReducer(cyclesReducer, [])
 
-  // Função modificada para receber um objeto CartItem completo
-  function addToCart(item: CartItem) {
-    const itemIndex = items.findIndex(
-      existingItem => existingItem.id === item.id
-    )
-
-    if (itemIndex >= 0) {
-      // Se o item já existir, cria uma cópia da lista e atualiza o item específico
-      const newItems = [...items]
-      newItems[itemIndex].quantity += item.quantity
-      setItems(newItems)
-    } else {
-      // Se o item não existir, adiciona-o à lista (como um objeto do tipo CartItem)
-      setItems(prevItems => [...prevItems, item])
-    }
+  function addToCart(item: CartItemInterface) {
+    dispatch({ type: ActionTypes.ADD_ITEM, payload: item })
   }
 
   function removeFromCart(id: string) {
-    setItems(items.filter(item => item.id !== id))
+    dispatch({ type: ActionTypes.REMOVE_ITEM, payload: id })
   }
 
   function updateQuantity(id: string, quantity: number) {
-    if (quantity < 1) return
-
-    const itemIndex = items.findIndex(item => item.id === id)
-    console.log(itemIndex)
-    if (itemIndex >= 0) {
-      const newItems = [...items]
-      newItems[itemIndex].quantity = quantity
-      setItems(newItems)
-    }
+    dispatch({
+      type: ActionTypes.UPDATE_QUANTITY_ITEM,
+      payload: { id, quantity }
+    })
   }
 
   function decrementQuantity(id: string) {
-    const itemIndex = items.findIndex(item => item.id === id)
-    console.log(itemIndex)
-    if (itemIndex >= 0) {
-      const newItems = [...items]
-      const item = newItems[itemIndex]
-      if (item.quantity > 1) {
-        item.quantity -= 1
-        setItems(newItems)
-      } else {
-        // Se a quantidade for 1, remove o item do carrinho
-        removeFromCart(id)
-      }
+    console.log('decrementQuantity', id)
+    const item = items.find(item => item.id === id)
+    if (item && item.quantity > 1) {
+      dispatch({ type: ActionTypes.DECREMENT_QUANTITY_ITEM, payload: id })
     }
   }
 

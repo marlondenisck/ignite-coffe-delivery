@@ -1,4 +1,5 @@
 import { Minus, Plus } from '@phosphor-icons/react'
+import './styles.css'
 
 type QuantityInputProps = {
   quantity: number
@@ -13,11 +14,7 @@ export function QuantityInput({
 }: QuantityInputProps) {
   return (
     <div className="quantity-input-container">
-      <button
-        // Desabilitamos apenas a diminuição se for 1 ou se já estiver no carrinho
-        // disabled={quantity <= 1 || isItemAdded}
-        onClick={decrementQuantity}
-      >
+      <button disabled={quantity <= 1} onClick={decrementQuantity}>
         <Minus size={14} />
       </button>
       <span>{quantity}</span>

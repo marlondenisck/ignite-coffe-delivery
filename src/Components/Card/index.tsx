@@ -17,10 +17,16 @@ type CardProps = {
 }
 export function Card({ coffee }: CardProps) {
   const navigate = useNavigate()
-  const [quantity, setQuantity] = useState(1)
+  const [tempQuantity, setTempQuantity] = useState(1)
   const [isItemAdded, setIsItemAdded] = useState(false)
   const { items, addToCart, updateQuantity, decrementQuantity } =
     useContext(CartContext)
+
+  // Busca o item no carrinho, se existir
+  const coffeeInCart = items.find(item => item.id === coffee.id)
+  // A quantidade a ser exibida é a do carrinho se o item estiver lá, ou a temporária se não
+  const quantity =
+    isItemAdded && coffeeInCart ? coffeeInCart.quantity : tempQuantity
 
   function handleIncrementQuantity() {
     if (isItemAdded) {
@@ -28,45 +34,39 @@ export function Card({ coffee }: CardProps) {
       updateQuantity(coffee.id, quantity + 1)
     } else {
       // Se o item não está no carrinho, atualiza apenas o estado local
-      setQuantity(state => state + 1)
+      setTempQuantity(state => state + 1)
     }
   }
 
   function handleDecrementQuantity() {
     if (isItemAdded) {
-      // Se o item já está no carrinho, usa a função do contexto
-      decrementQuantity(coffee.id)
+      // Se o item já está no carrinho, usa a função do contexto apenas se quantidade > 1
+      if (coffeeInCart && coffeeInCart.quantity > 1) {
+        decrementQuantity(coffee.id)
+      }
     } else {
       // Se o item não está no carrinho, atualiza apenas o estado local
-      if (quantity > 1) {
-        setQuantity(state => state - 1)
+      if (tempQuantity > 1) {
+        setTempQuantity(state => state - 1)
       }
     }
   }
 
-  // Verifica se o café está no carrinho e atualiza a quantidade
   useEffect(() => {
-    // Busca no array de items se existe um com o mesmo id do café atual
-    const coffeeInCart = items.find(item => item.id === coffee.id)
-
-    // Se encontrou o café no carrinho
     if (coffeeInCart) {
       setIsItemAdded(true)
-      // Atualiza a quantidade com o valor do carrinho
-      setQuantity(coffeeInCart.quantity)
     } else {
       setIsItemAdded(false)
-      // Volta para o valor padrão (1) quando o café não está no carrinho
-      setQuantity(1)
+      setTempQuantity(1)
     }
-  }, [items, coffee.id])
+  }, [coffeeInCart])
 
   function handleAddItem() {
     if (isItemAdded) {
       // Se o item já está no carrinho, navegamos para a página do carrinho
       navigate('/cart')
     } else {
-      addToCart({ id: coffee.id, quantity })
+      addToCart({ id: coffee.id, quantity: tempQuantity })
       setIsItemAdded(true)
     }
   }
