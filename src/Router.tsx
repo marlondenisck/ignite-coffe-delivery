@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Header } from './components/Header'
 import { Home } from './pages/Home'
 import { Cart } from './pages/Cart'
+import { Success } from './pages/Success'
 
 const DefaultLayout = ({ children }: { children: ReactNode }) => (
   <>
@@ -29,6 +30,14 @@ export function Router() {
           element={
             <DefaultLayout>
               <Cart />
+            </DefaultLayout>
+          }
+        />
+        <Route
+          path="/success"
+          element={
+            <DefaultLayout>
+              <Success />
             </DefaultLayout>
           }
         />

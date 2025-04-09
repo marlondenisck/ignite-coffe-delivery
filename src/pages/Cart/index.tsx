@@ -1,4 +1,6 @@
-import React, { useContext, useState, FocusEvent, useCallback } from 'react'
+import React, { useContext, useState, FocusEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -36,7 +38,8 @@ const ensureArray = (possibleArray: any) => {
 }
 
 export function Cart() {
-  const { items, removeFromCart, updateQuantity, decrementQuantity } =
+  const navigate = useNavigate()
+  const { items, removeFromCart, updateQuantity, decrementQuantity, checkout } =
     useContext(CartContext)
   const [focusedInput, setFocusedInput] = useState<string | null>(null)
 
@@ -125,16 +128,25 @@ export function Cart() {
   }
 
   async function onSubmit(data: OrderFormData) {
+    if (coffeesInCart.length === 0) {
+      alert('Adicione pelo menos um item ao carrinho')
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
-      console.log('Dados do formulário:', data)
-      // Simulando um envio para API
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      alert('Pedido enviado! Confira o console para ver os dados.')
+      // Simular um delay de processamento
+      await new Promise(resolve => setTimeout(resolve, 1000))
+
+      // Chamar a função de checkout para finalizar o pedido
+      checkout(data)
+
+      // Redirecionar para a página de sucesso
+      navigate('/success')
     } catch (error) {
-      console.error('Erro ao enviar pedido:', error)
-      alert('Erro ao enviar pedido. Tente novamente.')
+      console.error('Erro ao processar o pedido:', error)
+      alert('Ocorreu um erro ao processar seu pedido. Tente novamente.')
     } finally {
       setIsSubmitting(false)
     }

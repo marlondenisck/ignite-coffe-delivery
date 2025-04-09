@@ -6,28 +6,49 @@ export interface CartItemInterface {
   quantity: number
 }
 
-export function cyclesReducer(state, action) {
+export interface OrderInfo {
+  cep: string
+  rua: string
+  numero: string
+  complemento?: string
+  bairro: string
+  cidade: string
+  uf: string
+  paymentMethod: 'credit' | 'debit' | 'cash'
+}
+
+export interface CartState {
+  items: CartItemInterface[]
+  order: OrderInfo | null
+}
+
+const initialState: CartState = {
+  items: [],
+  order: null
+}
+
+export function CartReducer(state = initialState, action) {
   return produce(state, draft => {
     switch (action.type) {
       case ActionTypes.ADD_ITEM: {
-        const itemIndex = draft.findIndex(
+        const itemIndex = draft.items.findIndex(
           existingItem => existingItem.id === action.payload.id
         )
 
         if (itemIndex >= 0) {
-          // Com Immer, podemos mutar o draft diretamente
-          draft[itemIndex].quantity += action.payload.quantity
+          draft.items[itemIndex].quantity += action.payload.quantity
         } else {
-          // Podemos simplesmente dar push em um novo item
-          draft.push(action.payload)
+          draft.items.push(action.payload)
         }
-        break // Com Immer, não precisamos retornar nada
+        break
       }
 
       case ActionTypes.REMOVE_ITEM: {
-        const itemIndex = draft.findIndex(item => item.id === action.payload)
+        const itemIndex = draft.items.findIndex(
+          item => item.id === action.payload
+        )
         if (itemIndex >= 0) {
-          draft.splice(itemIndex, 1)
+          draft.items.splice(itemIndex, 1)
         }
         break
       }
@@ -35,28 +56,30 @@ export function cyclesReducer(state, action) {
       case ActionTypes.UPDATE_QUANTITY_ITEM: {
         const { id, quantity } = action.payload
 
-        // Se a quantidade for menor que 1, não fazemos nada
         if (quantity < 1) return
 
-        const itemIndex = draft.findIndex(item => item.id === id)
+        const itemIndex = draft.items.findIndex(item => item.id === id)
         if (itemIndex >= 0) {
-          draft[itemIndex].quantity = quantity
+          draft.items[itemIndex].quantity = quantity
         }
         break
       }
 
       case ActionTypes.DECREMENT_QUANTITY_ITEM: {
         const id = action.payload
-        const itemIndex = draft.findIndex(item => item.id === id)
+        const itemIndex = draft.items.findIndex(item => item.id === id)
 
-        // Só decrementa se o item existir e a quantidade for > 1
-        if (itemIndex >= 0 && draft[itemIndex].quantity > 1) {
-          draft[itemIndex].quantity -= 1
+        if (itemIndex >= 0 && draft.items[itemIndex].quantity > 1) {
+          draft.items[itemIndex].quantity -= 1
         }
         break
       }
 
-      // Não precisamos de um default com Immer
+      case ActionTypes.CHECKOUT_SUCCESS: {
+        draft.order = action.payload
+        draft.items = []
+        break
+      }
     }
   })
 }
