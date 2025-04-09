@@ -12,6 +12,7 @@ type CartContextType = {
   addToCart: (item: CartItem) => void
   removeFromCart: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
+  decrementQuantity: (id: string) => void
 }
 
 export const CartContext = createContext({} as CartContextType)
@@ -41,15 +42,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }
 
   function updateQuantity(id: string, quantity: number) {
-    // Não permitir quantidades menores que 1
     if (quantity < 1) return
 
     const itemIndex = items.findIndex(item => item.id === id)
-
+    console.log(itemIndex)
     if (itemIndex >= 0) {
       const newItems = [...items]
       newItems[itemIndex].quantity = quantity
       setItems(newItems)
+    }
+  }
+
+  function decrementQuantity(id: string) {
+    const itemIndex = items.findIndex(item => item.id === id)
+    console.log(itemIndex)
+    if (itemIndex >= 0) {
+      const newItems = [...items]
+      const item = newItems[itemIndex]
+      if (item.quantity > 1) {
+        item.quantity -= 1
+        setItems(newItems)
+      } else {
+        // Se a quantidade for 1, remove o item do carrinho
+        removeFromCart(id)
+      }
     }
   }
 
@@ -59,7 +75,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         items,
         addToCart,
         removeFromCart,
-        updateQuantity
+        updateQuantity,
+        decrementQuantity
       }}
     >
       {children}

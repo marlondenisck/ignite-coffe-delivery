@@ -19,15 +19,28 @@ export function Card({ coffee }: CardProps) {
   const navigate = useNavigate()
   const [quantity, setQuantity] = useState(1)
   const [isItemAdded, setIsItemAdded] = useState(false)
-  const { items, addToCart } = useContext(CartContext)
+  const { items, addToCart, updateQuantity, decrementQuantity } =
+    useContext(CartContext)
 
-  function incrementQuantity() {
-    setQuantity(state => state + 1)
+  function handleIncrementQuantity() {
+    if (isItemAdded) {
+      // Se o item já está no carrinho, usa a função do contexto
+      updateQuantity(coffee.id, quantity + 1)
+    } else {
+      // Se o item não está no carrinho, atualiza apenas o estado local
+      setQuantity(state => state + 1)
+    }
   }
 
-  function decrementQuantity() {
-    if (quantity > 1) {
-      setQuantity(state => state - 1)
+  function handleDecrementQuantity() {
+    if (isItemAdded) {
+      // Se o item já está no carrinho, usa a função do contexto
+      decrementQuantity(coffee.id)
+    } else {
+      // Se o item não está no carrinho, atualiza apenas o estado local
+      if (quantity > 1) {
+        setQuantity(state => state - 1)
+      }
     }
   }
 
@@ -77,8 +90,8 @@ export function Card({ coffee }: CardProps) {
         <div className="order">
           <QuantityInput
             quantity={quantity}
-            incrementQuantity={incrementQuantity}
-            decrementQuantity={decrementQuantity}
+            incrementQuantity={handleIncrementQuantity}
+            decrementQuantity={handleDecrementQuantity}
           />
 
           <button
